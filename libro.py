@@ -1,6 +1,6 @@
+# libro.py
+
 from estado import EstadoDisponible, EstadoPrestado, EstadoExtraviado
-
-
 
 class Libro:
     def __init__(self, codigo, titulo, precio_reposicion):
