@@ -2,6 +2,7 @@
 
 import tkinter as tk
 from tkinter import messagebox
+from socio import Socio
 from libro import Libro
 from database import *
 import sqlite3
@@ -25,10 +26,6 @@ class CrearSocioWindow:
         self.nombre_entry = tk.Entry(root)
         self.nombre_entry.pack()
 
-        self.id_prestamo_label = tk.Label(root, text="ID de Préstamo:")
-        self.id_prestamo_label.pack()
-        self.id_prestamo_entry = tk.Entry(root)
-        self.id_prestamo_entry.pack()
 
         self.crear_socio_button = tk.Button(root, text="Crear Socio", command=self.crear_socio)
         self.crear_socio_button.pack()
@@ -39,24 +36,23 @@ class CrearSocioWindow:
     def crear_socio(self):
         id_socio = self.id_entry.get()
         nombre = self.nombre_entry.get()
-        id_prestamo = self.id_prestamo_entry.get()
 
         # Validaciones de datos aquí
-        if not id_socio.isdigit() or not nombre or not id_prestamo.isdigit():
+        if not id_socio.isdigit() or not nombre:
             mensaje_error = "Por favor, ingrese datos válidos."
             messagebox.showerror("Error", mensaje_error)
             return  # Detiene la ejecución en caso de error de validación
-
+        
         id_socio = int(id_socio)
-        id_prestamo = int(id_prestamo)
 
-        if id_socio < 1 or id_prestamo < 1:
-            mensaje_error = "El ID y el ID de préstamo deben ser números enteros positivos."
+        if id_socio < 1:
+            mensaje_error = "El ID debe ser números enteros positivos."
             messagebox.showerror("Error", mensaje_error)
             return  # Detiene la ejecución en caso de error de validación
 
         try:
-            self.db.guardar_socio(id_socio, nombre, id_prestamo)
+            nuevo_socio = Socio(id_socio, nombre)
+            self.db.guardar_socio(id_socio, nombre)
             self.exito = True
         except sqlite3.IntegrityError:
             mensaje_error = "El ID de socio ya existe en la base de datos. Por favor, ingrese un ID único."

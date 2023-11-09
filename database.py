@@ -35,10 +35,10 @@ class BibliotecaDB:
             messagebox.showerror("Error", mensaje_error)  # Muestra un cuadro de diálogo de error
             # No es necesario volver a lanzar la excepción aquí
             
-    def guardar_socio(self, id_socio, nombre, id_prestamo):
+    def guardar_socio(self, id_socio, nombre):
         try:
-            self.cursor.execute("INSERT INTO socios (id, nombre, id_prestamo) VALUES (?, ?, ?)",
-                                (id_socio, nombre, id_prestamo))
+            self.cursor.execute("INSERT INTO socios (id, nombre) VALUES (?, ?)",
+                                (id_socio, nombre))
             self.conn.commit()
         except sqlite3.IntegrityError:
             # Si se produce una excepción de integridad, significa que el ID de socio ya existe

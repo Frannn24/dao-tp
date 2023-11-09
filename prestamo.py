@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import *
+from estado import *
 
 class Prestamo:
     def __init__(self, libro, socio, fecha_prestamo, fecha_devolucion):
