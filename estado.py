@@ -10,12 +10,27 @@ class EstadoLibro:
 
     def devolucion_con_demora(self):
         pass
+    
+    def esDisponible(self):
+        return False
+    
+    def esPrestado(self):
+        return False
+    
+    def esExtraviado(self):
+        return False
 
 class EstadoDisponible(EstadoLibro):
+    def esDisponible(self):
+        return True
+    
     def prestamo(self):
         self.libro.cambiar_estado(EstadoPrestado(self.libro))
 
 class EstadoPrestado(EstadoLibro):
+    def esPrestado(self):
+        return True
+    
     def devolucion_en_fecha(self):
         self.libro.cambiar_estado(EstadoDisponible(self.libro))
 
@@ -23,4 +38,5 @@ class EstadoPrestado(EstadoLibro):
         self.libro.cambiar_estado(EstadoExtraviado(self.libro))
 
 class EstadoExtraviado(EstadoLibro):
-    pass
+    def esExtraviado(self):
+        return True

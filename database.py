@@ -15,6 +15,14 @@ class BibliotecaDB:
                 estado TEXT
             )
         """)
+        
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS socios (
+                id INTEGER PRIMARY KEY,
+                nombre TEXT NOT NULL,
+                id_prestamo INTEGER
+            )
+        """)
 
     def guardar_libro(self, libro):
         try:
@@ -26,6 +34,18 @@ class BibliotecaDB:
             mensaje_error = "El código ya existe en la base de datos."
             messagebox.showerror("Error", mensaje_error)  # Muestra un cuadro de diálogo de error
             # No es necesario volver a lanzar la excepción aquí
-
+            
+    def guardar_socio(self, id_socio, nombre, id_prestamo):
+        try:
+            self.cursor.execute("INSERT INTO socios (id, nombre, id_prestamo) VALUES (?, ?, ?)",
+                                (id_socio, nombre, id_prestamo))
+            self.conn.commit()
+        except sqlite3.IntegrityError:
+            # Si se produce una excepción de integridad, significa que el ID de socio ya existe
+            mensaje_error = "El ID de socio ya existe en la base de datos."
+            messagebox.showerror("Error", mensaje_error)  # Muestra un cuadro de diálogo de error
+            # No es necesario volver a lanzar la excepción aquí
+    
     def cerrar(self):
         self.conn.close()
+    

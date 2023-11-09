@@ -3,8 +3,75 @@
 import tkinter as tk
 from tkinter import messagebox
 from libro import Libro
-from database import BibliotecaDB
+from database import *
 import sqlite3
+
+
+class CrearSocioWindow:
+    def __init__(self, root, ventana_principal, db):
+        self.root = root
+        self.root.title("Crear Nuevo Socio")
+        self.ventana_principal = ventana_principal
+        self.db = db
+        self.exito = False  # Variable para controlar si el socio se guardó con éxito
+
+        self.id_label = tk.Label(root, text="ID:")
+        self.id_label.pack()
+        self.id_entry = tk.Entry(root)
+        self.id_entry.pack()
+
+        self.nombre_label = tk.Label(root, text="Nombre:")
+        self.nombre_label.pack()
+        self.nombre_entry = tk.Entry(root)
+        self.nombre_entry.pack()
+
+        self.id_prestamo_label = tk.Label(root, text="ID de Préstamo:")
+        self.id_prestamo_label.pack()
+        self.id_prestamo_entry = tk.Entry(root)
+        self.id_prestamo_entry.pack()
+
+        self.crear_socio_button = tk.Button(root, text="Crear Socio", command=self.crear_socio)
+        self.crear_socio_button.pack()
+
+        self.volver_button = tk.Button(root, text="Volver a inicio", command=self.volver_a_inicio)
+        self.volver_button.pack()
+
+    def crear_socio(self):
+        id_socio = self.id_entry.get()
+        nombre = self.nombre_entry.get()
+        id_prestamo = self.id_prestamo_entry.get()
+
+        # Validaciones de datos aquí
+        if not id_socio.isdigit() or not nombre or not id_prestamo.isdigit():
+            mensaje_error = "Por favor, ingrese datos válidos."
+            messagebox.showerror("Error", mensaje_error)
+            return  # Detiene la ejecución en caso de error de validación
+
+        id_socio = int(id_socio)
+        id_prestamo = int(id_prestamo)
+
+        if id_socio < 1 or id_prestamo < 1:
+            mensaje_error = "El ID y el ID de préstamo deben ser números enteros positivos."
+            messagebox.showerror("Error", mensaje_error)
+            return  # Detiene la ejecución en caso de error de validación
+
+        try:
+            self.db.guardar_socio(id_socio, nombre, id_prestamo)
+            self.exito = True
+        except sqlite3.IntegrityError:
+            mensaje_error = "El ID de socio ya existe en la base de datos. Por favor, ingrese un ID único."
+            messagebox.showerror("Error", mensaje_error)
+            self.exito = False
+            return
+
+        if self.exito:
+            messagebox.showinfo("Éxito", "Socio guardado con éxito")
+
+    def volver_a_inicio(self):
+        self.root.destroy()  # Cierra la ventana actual
+        self.ventana_principal.volver_a_ventana_inicio()  # Llama al método de la ventana principal para volver a la ventana "Guardar Socio"
+
+
 
 class CrearLibroWindow:
     def __init__(self, root, ventana_principal, db):
@@ -32,7 +99,7 @@ class CrearLibroWindow:
         self.crear_libro_button = tk.Button(root, text="Crear Libro", command=self.crear_libro)
         self.crear_libro_button.pack()
 
-        self.volver_button = tk.Button(root, text="Volver a Guardar Libro", command=self.volver_a_guardar_libro)
+        self.volver_button = tk.Button(root, text="Volver a inicio", command=self.volver_a_inicio)
         self.volver_button.pack()
 
     def crear_libro(self):
@@ -72,9 +139,9 @@ class CrearLibroWindow:
         if self.exito:
             messagebox.showinfo("Éxito", "Libro guardado con éxito")
 
-    def volver_a_guardar_libro(self):
+    def volver_a_inicio(self):
         self.root.destroy()  # Cierra la ventana actual
-        self.ventana_principal.volver_a_ventana_guardar_libro()  # Llama al método de la ventana principal para volver a la ventana "Guardar Libro"
+        self.ventana_principal.volver_a_ventana_inicio()  # Llama al método de la ventana principal para volver a la ventana "Guardar Libro"
 
 class VentanaPrincipal:
     def __init__(self, root, db):
@@ -84,17 +151,20 @@ class VentanaPrincipal:
 
         self.guardar_libro_button = tk.Button(root, text="Guardar Libro", command=self.abrir_ventana_guardar_libro)
         self.guardar_libro_button.pack()
+        
+        self.guardar_socio_button = tk.Button(root, text="Guardar Socio", command=self.abrir_ventana_guardar_socio)
+        self.guardar_socio_button.pack()
 
     def abrir_ventana_guardar_libro(self):
         self.root.withdraw()
         ventana_guardar_libro = tk.Toplevel(self.root)
         app = CrearLibroWindow(ventana_guardar_libro, self, self.db)
 
-    def volver_a_ventana_guardar_libro(self):
+    def abrir_ventana_guardar_socio(self):
+        self.root.withdraw()
+        ventana_guardar_socio = tk.Toplevel(self.root)
+        app = CrearSocioWindow(ventana_guardar_socio, self, self.db)
+
+    def volver_a_ventana_inicio(self):
         self.root.deiconify()  # Muestra la ventana principal
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    db = BibliotecaDB("biblioteca.db")
-    app = VentanaPrincipal(root, db)
-    root.mainloop()

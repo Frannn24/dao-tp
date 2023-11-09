@@ -1,5 +1,6 @@
 import tkinter as tk
 from ui import *
+from ventana_principal import *
 from database import BibliotecaDB
 
 if __name__ == "__main__":
