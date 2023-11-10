@@ -12,7 +12,8 @@ class BibliotecaDB:
                 codigo INTEGER PRIMARY KEY,
                 titulo TEXT NOT NULL,
                 precio_reposicion REAL,
-                estado TEXT
+                estado TEXT,
+                eliminado INTEGER DEFAULT 0
             )
         """)
         
@@ -21,6 +22,7 @@ class BibliotecaDB:
                 id_socio INTEGER PRIMARY KEY,
                 nombre TEXT NOT NULL,
                 id_prestamo INTEGER
+                eliminado INTEGER DEFAULT 0
             )
         """)
 

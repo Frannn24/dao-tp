@@ -1,5 +1,5 @@
 # ui.py
-
+"""
 import tkinter as tk
 from tkinter import messagebox
 from models.socio import Socio
@@ -174,4 +174,4 @@ class VentanaPrincipal:
 
     def volver_a_ventana_inicio(self):
         self.root.deiconify()  # Muestra la ventana principal
-
+"""
