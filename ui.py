@@ -16,10 +16,10 @@ class CrearSocioWindow:
         self.db = db
         self.exito = False  # Variable para controlar si el socio se guardó con éxito
 
-        self.id_label = tk.Label(root, text="ID:")
-        self.id_label.pack()
-        self.id_entry = tk.Entry(root)
-        self.id_entry.pack()
+        self.id_socio_label = tk.Label(root, text="ID:")
+        self.id_socio_label.pack()
+        self.id_socio_entry = tk.Entry(root)
+        self.id_socio_entry.pack()
 
         self.nombre_label = tk.Label(root, text="Nombre:")
         self.nombre_label.pack()
@@ -34,7 +34,7 @@ class CrearSocioWindow:
         self.volver_button.pack()
 
     def crear_socio(self):
-        id_socio = self.id_entry.get()
+        id_socio = self.id_socio_entry.get()
         nombre = self.nombre_entry.get()
 
         # Validaciones de datos aquí
@@ -42,7 +42,7 @@ class CrearSocioWindow:
             mensaje_error = "Por favor, ingrese datos válidos."
             messagebox.showerror("Error", mensaje_error)
             return  # Detiene la ejecución en caso de error de validación
-        
+
         id_socio = int(id_socio)
 
         if id_socio < 1:
@@ -52,14 +52,21 @@ class CrearSocioWindow:
 
         try:
             nuevo_socio = Socio(id_socio, nombre)
-            self.db.guardar_socio(id_socio, nombre)
+            self.db.guardar_socio(nuevo_socio)
+            # Solo establecer 'exito' en True si no se lanzó ninguna excepción
             self.exito = True
+        except ValueError:
+            mensaje_error = "El ID de socio debe ser un número entero."
+            messagebox.showerror("Error", mensaje_error)
+            self.exito = False
+            return
         except sqlite3.IntegrityError:
             mensaje_error = "El ID de socio ya existe en la base de datos. Por favor, ingrese un ID único."
             messagebox.showerror("Error", mensaje_error)
             self.exito = False
             return
 
+        # Muestra el mensaje de éxito solo si no se lanzó ninguna excepción
         if self.exito:
             messagebox.showinfo("Éxito", "Socio guardado con éxito")
 
@@ -97,6 +104,10 @@ class CrearLibroWindow:
 
         self.volver_button = tk.Button(root, text="Volver a inicio", command=self.volver_a_inicio)
         self.volver_button.pack()
+        
+        self.exito_label = tk.Label(root, text="")
+        self.exito_label.pack()
+
 
     def crear_libro(self):
         codigo = self.codigo_entry.get()
@@ -130,10 +141,10 @@ class CrearLibroWindow:
             mensaje_error = "El código ya existe en la base de datos. Por favor, ingrese un código único."
             messagebox.showerror("Error", mensaje_error)
             self.exito = False
-            return
 
         if self.exito:
             messagebox.showinfo("Éxito", "Libro guardado con éxito")
+        
 
     def volver_a_inicio(self):
         self.root.destroy()  # Cierra la ventana actual

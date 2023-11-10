@@ -1,7 +1,7 @@
 class Socio:
-    def __init__(self, nombre, id):
+    def __init__(self, id_socio, nombre):
         # Constructor para crear un objeto Socio
-        self.id = id
+        self.id_socio = id_socio
         self.nombre = nombre
         self.libros_prestados = []
 
