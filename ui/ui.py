@@ -2,9 +2,9 @@
 
 import tkinter as tk
 from tkinter import messagebox
-from socio import Socio
-from libro import Libro
-from database import *
+from models.socio import Socio
+from models.libro import Libro
+from database.database import *
 import sqlite3
 
 

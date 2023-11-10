@@ -1,7 +1,7 @@
 import tkinter as tk
-from ui import *
-from ventana_principal import *
-from database import BibliotecaDB
+from ui.ui import *
+#from ventana_principal import *
+from database.database import BibliotecaDB
 
 if __name__ == "__main__":
     root = tk.Tk()
