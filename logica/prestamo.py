@@ -28,6 +28,6 @@ class Prestamo:
     def estraviado(self):
         fecha_devoluvion_mes = self.fecha_devolucion + timedelta(days=30)
         if datetime.now() > fecha_devoluvion_mes:
-            self.libro.estado = EstadoExtraviado
+            self.libro.estado = Extraviado
         else:
             print(f"El libro aun no paso 30 dias de la fecha de devolución.")

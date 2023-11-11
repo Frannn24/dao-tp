@@ -25,6 +25,18 @@ class BibliotecaDB:
                 eliminado INTEGER DEFAULT 0
             )
         """)
+        
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS prestamo (
+                id_prestamo INTEGER PRIMARY KEY,
+                id_socio INTEGER,
+                id_libro INTEGER,
+                estado INTEGER,
+                fecha_prestamo TEXT,
+                fecha_devolucion TEXT
+            )
+        ''')
+
 
     def guardar_libro(self, libro):
         try:
@@ -55,6 +67,48 @@ class BibliotecaDB:
 
         except sqlite3.Error as e:
             messagebox.showerror("Error", f"Error al guardar el socio: {str(e)}")
+    def guardar_prestamo(self, id_socio, id_libro, fecha_prestamo, fecha_devolucion):
+        try:
+            # Validar que id_socio existe en la tabla socios
+            with self.conn:
+                self.cursor.execute("SELECT id_socio FROM socios WHERE id_socio = ?", (id_socio,))
+                existe_socio = self.cursor.fetchone()
+
+            if not existe_socio:
+                mensaje_error = "El ID de socio no existe en la base de datos. Por favor, ingrese un ID de socio válido."
+                messagebox.showerror("Error", mensaje_error)
+                return
+
+            # Validar que id_socio no tenga más de tres préstamos activos
+            with self.conn:
+                self.cursor.execute("SELECT COUNT(*) FROM prestamo WHERE id_socio = ? AND estado = 1", (id_socio,))
+                prestamos_activos = self.cursor.fetchone()[0]
+
+            if prestamos_activos >= 3:
+                mensaje_error = "Este socio ya tiene tres préstamos activos. No se pueden agregar más préstamos."
+                messagebox.showerror("Error", mensaje_error)
+                return
+
+            # Validar que id_libro existe en la tabla libros
+            with self.conn:
+                self.cursor.execute("SELECT codigo FROM libros WHERE codigo = ?", (id_libro,))
+                existe_libro = self.cursor.fetchone()
+
+            if not existe_libro:
+                mensaje_error = "El código de libro no existe en la base de datos. Por favor, ingrese un código de libro válido."
+                messagebox.showerror("Error", mensaje_error)
+                return
+
+            # Si todos los criterios se cumplen, proceder con la inserción del préstamo
+            with self.conn:
+                self.cursor.execute('''
+                    INSERT INTO prestamo (id_socio, id_libro, estado, fecha_prestamo, fecha_devolucion)
+                    VALUES (?, ?, 1, ?, ?)
+                ''', (id_socio, id_libro, fecha_prestamo, fecha_devolucion))
+            messagebox.showinfo("Éxito", "Préstamo guardado con éxito")
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"Error al guardar el préstamo: {str(e)}")
+
     
     def cerrar(self):
         self.conn.close()
