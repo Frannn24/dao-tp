@@ -31,7 +31,7 @@ class BibliotecaDB:
                 id_prestamo INTEGER PRIMARY KEY,
                 id_socio INTEGER,
                 id_libro INTEGER,
-                estado INTEGER,
+                estado INTEGER, 
                 fecha_prestamo TEXT,
                 fecha_devolucion TEXT
             )
@@ -49,6 +49,7 @@ class BibliotecaDB:
             messagebox.showerror("Error", mensaje_error)  # Muestra un cuadro de diálogo de error
             # No es necesario volver a lanzar la excepción aquí
             
+    
     def guardar_socio(self, socio):
         try:
             # Verificar si el ID de socio ya existe
@@ -67,6 +68,8 @@ class BibliotecaDB:
 
         except sqlite3.Error as e:
             messagebox.showerror("Error", f"Error al guardar el socio: {str(e)}")
+   
+   
     def guardar_prestamo(self, id_socio, id_libro, fecha_prestamo, fecha_devolucion):
         try:
             # Validar que id_socio existe en la tabla socios
@@ -100,6 +103,7 @@ class BibliotecaDB:
                 return
 
             # Si todos los criterios se cumplen, proceder con la inserción del préstamo
+            # El estado es 1 para prestamo en curso, 2 terminado
             with self.conn:
                 self.cursor.execute('''
                     INSERT INTO prestamo (id_socio, id_libro, estado, fecha_prestamo, fecha_devolucion)
@@ -108,6 +112,28 @@ class BibliotecaDB:
             messagebox.showinfo("Éxito", "Préstamo guardado con éxito")
         except sqlite3.Error as e:
             messagebox.showerror("Error", f"Error al guardar el préstamo: {str(e)}")
+        
+        
+        def terminar_prestamo(self, id_prestamo):
+            try:
+                # Validar que el préstamo existe
+                with self.conn:
+                    self.cursor.execute("SELECT id_prestamo FROM prestamo WHERE id_prestamo = ?", (id_prestamo,))
+                    existe_prestamo = self.cursor.fetchone()
+
+                if not existe_prestamo:
+                    mensaje_error = "El ID de préstamo no existe en la base de datos. Por favor, ingrese un ID de préstamo válido."
+                    messagebox.showerror("Error", mensaje_error)
+                    return
+
+                # Cambiar el estado del préstamo a 2 (indicando que está terminado)
+                with self.conn:
+                    self.cursor.execute("UPDATE prestamo SET estado = 2 WHERE id_prestamo = ?", (id_prestamo,))
+                messagebox.showinfo("Éxito", "Préstamo terminado con éxito")
+
+            except sqlite3.Error as e:
+                messagebox.showerror("Error", f"Error al terminar el préstamo: {str(e)}")
+
 
     
     def cerrar(self):
