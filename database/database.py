@@ -94,7 +94,7 @@ class BibliotecaDB:
 
             # Validar que id_libro existe en la tabla libros
             with self.conn:
-                self.cursor.execute("SELECT codigo FROM libros WHERE codigo = ?", (id_libro,))
+                self.cursor.execute("SELECT codigo FROM libros WHERE codigo = ? AND estado = 'Disponible'", (id_libro,))
                 existe_libro = self.cursor.fetchone()
 
             if not existe_libro:
@@ -109,6 +109,9 @@ class BibliotecaDB:
                     INSERT INTO prestamo (id_socio, id_libro, estado, fecha_prestamo, fecha_devolucion)
                     VALUES (?, ?, 1, ?, ?)
                 ''', (id_socio, id_libro, fecha_prestamo, fecha_devolucion))
+                self.cursor.execute("UPDATE libros SET estado = 'Prestado' WHERE codigo = ?", (id_libro,))
+
+                
             messagebox.showinfo("Éxito", "Préstamo guardado con éxito")
         except sqlite3.Error as e:
             messagebox.showerror("Error", f"Error al guardar el préstamo: {str(e)}")

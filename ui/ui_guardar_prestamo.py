@@ -42,7 +42,7 @@ class CrearGuardarPrestamo:
         self.guardar_prestamo_button = tk.Button(root, text="Guardar Prestamo", command=self.guardar_prestamo)
         self.guardar_prestamo_button.pack()
         
-        self.volver_button = tk.Button(root, text="Volver a Administración de Socios", command=self.volver_a_admin_socios)
+        self.volver_button = tk.Button(root, text="Volver a Registrar Prestamo", command=self.volver_a_reg_prestamos)
         self.volver_button.pack()
 
     def guardar_prestamo(self):
@@ -56,6 +56,6 @@ class CrearGuardarPrestamo:
             return
         self.db.guardar_prestamo(id_socio, id_libro, fecha_prestamo, fecha_devolucion)
         
-    def volver_a_admin_socios(self):
+    def volver_a_reg_prestamos(self):
         self.root.destroy()  # Cierra la ventana actual
-        self.ventana_admin_socios.root.deiconify()
+        self.ventana_reg_prestamo.root.deiconify()
