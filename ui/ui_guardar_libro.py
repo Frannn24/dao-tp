@@ -1,9 +1,10 @@
+#ui_guardar_libro.py
+
 import tkinter as tk
 from tkinter import messagebox
 from models.libro import Libro
-#from database.database import BibliotecaDB
 import sqlite3
-from ui.utilidades import *
+
 
 class CrearLibroWindow:
     def __init__(self, root, ventana_principal, db):
@@ -31,7 +32,7 @@ class CrearLibroWindow:
         self.crear_libro_button = tk.Button(root, text="Crear Libro", command=self.crear_libro)
         self.crear_libro_button.pack()
 
-        self.volver_button = tk.Button(root, text="Volver a inicio", command=self.volver_a_inicio)
+        self.volver_button = tk.Button(root, text="Volver a Administración de Socios", command=self.volver_a_admin_socios)
         self.volver_button.pack()
         
         self.exito_label = tk.Label(root, text="")
@@ -73,14 +74,8 @@ class CrearLibroWindow:
 
         if self.exito:
             messagebox.showinfo("Éxito", "Libro guardado con éxito")
-            
-    def volver_a_inicio(self):
-        
-        volver_a_ventana_inicio(self.root)
-        self.ventana_principal.volver_a_ventana_inicio()
-        
-"""
-    def volver_a_inicio(self):
+   
+   
+    def volver_a_admin_socios(self):
         self.root.destroy()  # Cierra la ventana actual
-        self.ventana_principal.volver_a_ventana_inicio()  # Llama al método de la ventana principal para volver a la ventana "Guardar Libro"
-        """
+        self.ventana_admin_socios.root.deiconify()

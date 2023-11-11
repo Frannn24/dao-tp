@@ -1,9 +1,10 @@
+#ui_guardar_socio.py
+
 import tkinter as tk
 from tkinter import messagebox
 from models.socio import Socio
-#from database.database import BibliotecaDB
 import sqlite3
-from ui.utilidades import *
+
 
 class CrearSocioWindow:
     def __init__(self, root, ventana_principal, db):
@@ -27,7 +28,7 @@ class CrearSocioWindow:
         self.crear_socio_button = tk.Button(root, text="Crear Socio", command=self.crear_socio)
         self.crear_socio_button.pack()
 
-        self.volver_button = tk.Button(root, text="Volver a inicio", command=self.volver_a_inicio)
+        self.volver_button = tk.Button(root, text="Volver a Administración de Socios", command=self.volver_a_admin_socios)
         self.volver_button.pack()
 
     def crear_socio(self):
@@ -66,8 +67,8 @@ class CrearSocioWindow:
         # Muestra el mensaje de éxito solo si no se lanzó ninguna excepción
         if self.exito:
             messagebox.showinfo("Éxito", "Socio guardado con éxito")
+               
             
-    def volver_a_inicio(self):
-        
-        volver_a_ventana_inicio(self.root)
-        self.ventana_principal.volver_a_ventana_inicio()
+    def volver_a_admin_socios(self):
+        self.root.destroy()  # Cierra la ventana actual
+        self.ventana_admin_socios.root.deiconify()

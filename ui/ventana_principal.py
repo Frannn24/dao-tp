@@ -1,12 +1,8 @@
 #ventana_principal.py
+
 import tkinter as tk
-#from tkinter import messagebox
-#from models.socio import Socio
-#from models.libro import Libro
-#from database.database import BibliotecaDB
-#from ui.ui_guardar_socio import *
-#from ui.ui_guardar_libro import *
-from ui.utilidades import volver_a_ventana_inicio
+from ui.ui_admin_socios import AdministracionSociosWindow  # Agregamos la nueva ventana
+from ui.ui_admin_libros import AdministracionLibrosWindow 
 
 
 
@@ -15,27 +11,24 @@ class VentanaPrincipal:
         self.root = root
         self.root.title("Biblioteca")
         self.db = db
-
-        self.guardar_libro_button = tk.Button(root, text="Guardar Libro", command=self.abrir_ventana_guardar_libro)
-        self.guardar_libro_button.pack()
         
-        self.guardar_socio_button = tk.Button(root, text="Guardar Socio", command=self.abrir_ventana_guardar_socio)
-        self.guardar_socio_button.pack()
-
-    def abrir_ventana_guardar_libro(self):
+        self.admin_libros_button = tk.Button(root, text="Administración de Libros", command=self.abrir_ventana_admin_libros)
+        self.admin_libros_button.pack()
+        
+        self.admin_socios_button = tk.Button(root, text="Administración de Socios", command=self.abrir_ventana_admin_socios)
+        self.admin_socios_button.pack()
+        
+    def abrir_ventana_admin_libros(self):
         self.root.withdraw()
-        ventana_guardar_libro = tk.Toplevel(self.root)
-        from ui.ui_guardar_libro import CrearLibroWindow
-        app = CrearLibroWindow(ventana_guardar_libro, self, self.db)
-
-    def abrir_ventana_guardar_socio(self):
+        ventana_admin_libros = tk.Toplevel(self.root)
+        app = AdministracionLibrosWindow(ventana_admin_libros, self, self.db)
+        self.root.deiconify()
+        
+    def abrir_ventana_admin_socios(self):
         self.root.withdraw()
-        ventana_guardar_socio = tk.Toplevel(self.root)
-        from ui.ui_guardar_socio import CrearSocioWindow
-        app = CrearSocioWindow(ventana_guardar_socio, self, self.db)
-    
-    def volver_a_ventana_inicio(self):
-        volver_a_ventana_inicio(self.root)
-
-def volver_a_ventana_inicio(root):
-    root.deiconify()
+        ventana_admin_socios = tk.Toplevel(self.root)
+        app = AdministracionSociosWindow(ventana_admin_socios, self, self.db)
+        self.root.deiconify()
+   
+    def volver_a_inicio(self):
+        self.ventana_principal.root.deiconify()  # Vuelve a mostrar la ventana de inicio
