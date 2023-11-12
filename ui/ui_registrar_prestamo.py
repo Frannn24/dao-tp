@@ -15,11 +15,11 @@ class RegistrarPrestamosWindow:
         self.ventana_principal = ventana_principal
 
 
-        # Labels
         self.id_socio_label = tk.Label(root, text="ID Socio:")
         self.id_socio_label.pack()
         self.entry_id_socio = tk.Entry(root)
         self.entry_id_socio.pack()
+        
         
         self.id_libro_label =tk.Label(root, text="ID Libro:")
         self.id_libro_label.pack()
@@ -42,10 +42,19 @@ class RegistrarPrestamosWindow:
         self.guardar_prestamo_button = tk.Button(root, text="Registrar Prestamo", command=self.registrar_prestamo)
         self.guardar_prestamo_button.pack()
         
+<<<<<<< HEAD:ui/ui_registrar_prestamo.py
         self.volver_button = tk.Button(root, text="Volver a Administración de Socios", command=self.volver_a_admin_prestamos)
         self.volver_button.pack()
 
     def registrar_prestamo(self):
+=======
+        
+        self.volver_button = tk.Button(root, text="Volver a Registrar Prestamo", command=self.volver_a_reg_prestamos)
+        self.volver_button.pack()
+
+
+    def guardar_prestamo(self):
+>>>>>>> d4da1c1c9074e2a8bc94eadbf4863dfd5ed0b9eb:ui/ui_guardar_prestamo.py
         id_socio = self.entry_id_socio.get()
         id_libro = self.entry_id_libro.get()
         fecha_prestamo = self.entry_fecha_prestamo.get()
@@ -56,6 +65,13 @@ class RegistrarPrestamosWindow:
             return
         self.db.registrar_prestamo(id_socio, id_libro, fecha_prestamo, fecha_devolucion)
         
+<<<<<<< HEAD:ui/ui_registrar_prestamo.py
     def volver_a_admin_prestamos(self):
         self.root.destroy()  # Cierra la ventana actual
         self.ventana_principal.root.deiconify()
+=======
+        
+    def volver_a_reg_prestamos(self):
+        self.root.destroy()  # Cierra la ventana actual
+        self.ventana_reg_prestamo.root.deiconify()
+>>>>>>> d4da1c1c9074e2a8bc94eadbf4863dfd5ed0b9eb:ui/ui_guardar_prestamo.py

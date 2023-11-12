@@ -26,6 +26,9 @@ class VentanaPrincipal:
         self.reg_prestamo_button = tk.Button(root, text="Administracion de Reportes", command=self.abrir_ventana_admin_reportes)
         self.reg_prestamo_button.pack()
         
+        self.reg_devolucion_button = tk.Button(root, text="Registrar Devoluvion de libro", command=self.abrir_ventana_reg_devolucion)
+        self.reg_devolucion_button.pack()
+        
     def abrir_ventana_admin_libros(self):
         self.root.withdraw()
         ventana_admin_libros = tk.Toplevel(self.root)
