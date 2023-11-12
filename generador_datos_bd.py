@@ -1,4 +1,7 @@
-#Antes de usar borrar la base de datos biblioteca.db, luego ejecutar main.py y luego ejecutar este archivo
+#Antes de usar borrar la base de datos biblioteca.db
+#Luego ejecutar main.py
+#Luego ejecutar este archivo
+#Importante, esperar hasta que el archivo biblioteca-journal.db desaparezca
 
 import sqlite3
 import random
