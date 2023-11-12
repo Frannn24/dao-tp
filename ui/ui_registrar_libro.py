@@ -32,7 +32,7 @@ class RegistrarLibroWindow:
         self.crear_libro_button = tk.Button(root, text="Registrar Libro", command=self.registrar_libro)
         self.crear_libro_button.pack()
 
-        self.volver_button = tk.Button(root, text="Volver a Administración de Socios", command=self.volver_a_admin_socios)
+        self.volver_button = tk.Button(root, text="Volver a Administración de Libros", command=self.volver_a_admin_socios)
         self.volver_button.pack()
         
         self.exito_label = tk.Label(root, text="")

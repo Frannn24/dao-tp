@@ -53,7 +53,8 @@ class BibliotecaDB:
                 self.cursor.execute("INSERT INTO libros (codigo, titulo, precio_reposicion, estado) VALUES (?, ?, ?, ?)",
                                     (int(libro.codigo), str(libro.titulo), float(libro.precio_reposicion), "Disponible"))
                 self.conn.commit()
-                messagebox.showinfo("Éxito", "Libro registrado con éxito")
+                mensaje_exito = f"Libro registrado con éxito: \nCodigo: {int(libro.codigo)} \nTitulo: {str(libro.titulo)} \nNombre: {float(libro.precio_reposicion)} \nEstado: Disponible"
+                messagebox.showinfo("Éxito", mensaje_exito)
 
         except sqlite3.Error as e:
             messagebox.showerror("Error", f"Error al guardar el libro: {str(e)}")
@@ -72,7 +73,8 @@ class BibliotecaDB:
                 self.cursor.execute("INSERT INTO socios (id_socio, nombre) VALUES (?, ?)",
                                     (int(socio.id_socio), str(socio.nombre)))
                 self.conn.commit()
-                messagebox.showinfo("Éxito", "Socio guardado con éxito")
+                mensaje_exito = f"Socio registrado con éxito:\nID: {int(socio.id_socio)}\nNombre: {str(socio.nombre)}"
+                messagebox.showinfo("Éxito", mensaje_exito)
 
         except sqlite3.Error as e:
             messagebox.showerror("Error", f"Error al guardar el socio: {str(e)}")
@@ -119,8 +121,8 @@ class BibliotecaDB:
                 ''', (id_socio, id_libro, fecha_prestamo, fecha_devolucion))
                 self.cursor.execute("UPDATE libros SET estado = 'Prestado' WHERE codigo = ?", (id_libro,))
 
-                
-            messagebox.showinfo("Éxito", "Préstamo guardado con éxito")
+            mensaje_exito = f"Prestamo registrado con éxito:\nID Socio: {int(id_socio)}\nCodigo libro: {str(id_libro)}\nFecha de prestamo: {str(fecha_prestamo)}\nFecha de devolucion: {str(fecha_devolucion)}"    
+            messagebox.showinfo("Éxito", mensaje_exito)
         except sqlite3.Error as e:
             messagebox.showerror("Error", f"Error al guardar el préstamo: {str(e)}")
         
@@ -176,7 +178,7 @@ class BibliotecaDB:
                     # Cambiar el estado del libro a "Disponible" en la tabla libros
                     self.cursor.execute("UPDATE libros SET estado = 'Disponible' WHERE codigo = ?", (prestamo_info[1],))
 
-                mensaje_exito = f"Préstamo terminado con éxito. Libro marcado como 'Disponible'.\n"
+                mensaje_exito = f"Préstamo ID: {(id_prestamo)} - terminado con éxito. \nLibro  marcado como 'Disponible'.\n"
                 mensaje_exito += f"Precio Reposición del libro: {precio_reposicion}."
 
                 messagebox.showinfo("Éxito", mensaje_exito)
