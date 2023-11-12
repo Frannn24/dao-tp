@@ -38,7 +38,7 @@ class BibliotecaDB:
         ''')
 
 
-    def guardar_libro(self, libro):
+    def registrar_libro(self, libro):
         try:
             self.cursor.execute("INSERT INTO libros (codigo, titulo, precio_reposicion, estado) VALUES (?, ?, ?, ?)",
                                 (int(libro.codigo), str(libro.titulo), float(libro.precio_reposicion), "Disponible"))
@@ -50,7 +50,7 @@ class BibliotecaDB:
             # No es necesario volver a lanzar la excepción aquí
             
     
-    def guardar_socio(self, socio):
+    def registrar_socio(self, socio):
         try:
             # Verificar si el ID de socio ya existe
             self.cursor.execute("SELECT id_socio FROM socios WHERE id_socio = ?", (socio.id_socio,))
@@ -70,7 +70,7 @@ class BibliotecaDB:
             messagebox.showerror("Error", f"Error al guardar el socio: {str(e)}")
    
    
-    def guardar_prestamo(self, id_socio, id_libro, fecha_prestamo, fecha_devolucion):
+    def registrar_prestamo(self, id_socio, id_libro, fecha_prestamo, fecha_devolucion):
         try:
             # Validar que id_socio existe en la tabla socios
             with self.conn:
@@ -114,7 +114,7 @@ class BibliotecaDB:
             messagebox.showerror("Error", f"Error al guardar el préstamo: {str(e)}")
         
         
-        def terminar_prestamo(self, id_prestamo):
+        def registrar_termino_prestamo(self, id_prestamo):
             try:
                 # Validar que el préstamo existe
                 with self.conn:

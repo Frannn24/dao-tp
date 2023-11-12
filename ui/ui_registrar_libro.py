@@ -6,10 +6,10 @@ from models.libro import Libro
 import sqlite3
 
 
-class CrearLibroWindow:
+class RegistrarLibroWindow:
     def __init__(self, root, ventana_principal, db):
         self.root = root
-        self.root.title("Crear Nuevo Libro")
+        self.root.title("Registrar Nuevo Libro")
         self.ventana_principal = ventana_principal
         self.db = db
         self.exito = False  # Variable para controlar si el libro se guardó con éxito
@@ -29,7 +29,7 @@ class CrearLibroWindow:
         self.precio_reposicion_entry = tk.Entry(root)
         self.precio_reposicion_entry.pack()
 
-        self.crear_libro_button = tk.Button(root, text="Crear Libro", command=self.crear_libro)
+        self.crear_libro_button = tk.Button(root, text="Registrar Libro", command=self.registrar_libro)
         self.crear_libro_button.pack()
 
         self.volver_button = tk.Button(root, text="Volver a Administración de Socios", command=self.volver_a_admin_socios)
@@ -39,7 +39,7 @@ class CrearLibroWindow:
         self.exito_label.pack()
 
 
-    def crear_libro(self):
+    def registrar_libro(self):
         codigo = self.codigo_entry.get()
         titulo = self.titulo_entry.get()
         precio_reposicion = self.precio_reposicion_entry.get()
@@ -65,7 +65,7 @@ class CrearLibroWindow:
 
         try:
             nuevo_libro = Libro(codigo, titulo, precio_reposicion)
-            self.db.guardar_libro(nuevo_libro)
+            self.db.registrar_libro(nuevo_libro)
             self.exito = True
         except sqlite3.IntegrityError:
             mensaje_error = "El código ya existe en la base de datos. Por favor, ingrese un código único."
@@ -78,4 +78,4 @@ class CrearLibroWindow:
    
     def volver_a_admin_socios(self):
         self.root.destroy()  # Cierra la ventana actual
-        self.ventana_admin_socios.root.deiconify()
+        self.ventana_principal.root.deiconify()

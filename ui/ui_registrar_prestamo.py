@@ -7,11 +7,11 @@ import sqlite3
 import tkinter as tk
 from tkinter import messagebox
 
-class CrearGuardarPrestamo:
+class RegistrarPrestamosWindow:
     def __init__(self,root, ventana_principal, db):
         self.db = db
         self.root = root
-        self.root.title("Crear Nuevo Prestamo")
+        self.root.title("Registrar Nuevo Prestamo")
         self.ventana_principal = ventana_principal
 
 
@@ -39,13 +39,13 @@ class CrearGuardarPrestamo:
         self.entry_fecha_devolucion.pack()
 
         
-        self.guardar_prestamo_button = tk.Button(root, text="Guardar Prestamo", command=self.guardar_prestamo)
+        self.guardar_prestamo_button = tk.Button(root, text="Registrar Prestamo", command=self.registrar_prestamo)
         self.guardar_prestamo_button.pack()
         
-        self.volver_button = tk.Button(root, text="Volver a Administración de Socios", command=self.volver_a_admin_socios)
+        self.volver_button = tk.Button(root, text="Volver a Administración de Socios", command=self.volver_a_admin_prestamos)
         self.volver_button.pack()
 
-    def guardar_prestamo(self):
+    def registrar_prestamo(self):
         id_socio = self.entry_id_socio.get()
         id_libro = self.entry_id_libro.get()
         fecha_prestamo = self.entry_fecha_prestamo.get()
@@ -54,8 +54,8 @@ class CrearGuardarPrestamo:
         if not id_socio or not id_libro or not fecha_prestamo or not fecha_devolucion:
             messagebox.showerror("Error", "Por favor, complete todos los campos.")
             return
-        self.db.guardar_prestamo(id_socio, id_libro, fecha_prestamo, fecha_devolucion)
+        self.db.registrar_prestamo(id_socio, id_libro, fecha_prestamo, fecha_devolucion)
         
-    def volver_a_admin_socios(self):
+    def volver_a_admin_prestamos(self):
         self.root.destroy()  # Cierra la ventana actual
-        self.ventana_admin_socios.root.deiconify()
+        self.ventana_principal.root.deiconify()

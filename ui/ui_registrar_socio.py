@@ -6,10 +6,10 @@ from models.socio import Socio
 import sqlite3
 
 
-class CrearSocioWindow:
+class RegistrarSocioWindow:
     def __init__(self, root, ventana_principal, db):
         self.root = root
-        self.root.title("Crear Nuevo Socio")
+        self.root.title("Registrar Nuevo Socio")
         self.ventana_principal = ventana_principal
         self.db = db
         self.exito = False  # Variable para controlar si el socio se guardó con éxito
@@ -25,13 +25,13 @@ class CrearSocioWindow:
         self.nombre_entry.pack()
 
 
-        self.crear_socio_button = tk.Button(root, text="Crear Socio", command=self.crear_socio)
-        self.crear_socio_button.pack()
+        self.registrar_socio_button = tk.Button(root, text="Registrar Socio", command=self.registrar_socio)
+        self.registrar_socio_button.pack()
 
         self.volver_button = tk.Button(root, text="Volver a Administración de Socios", command=self.volver_a_admin_socios)
         self.volver_button.pack()
 
-    def crear_socio(self):
+    def registrar_socio(self):
         id_socio = self.id_socio_entry.get()
         nombre = self.nombre_entry.get()
 
@@ -50,7 +50,7 @@ class CrearSocioWindow:
 
         try:
             nuevo_socio = Socio(id_socio, nombre)
-            self.db.guardar_socio(nuevo_socio)
+            self.db.registrar_socio(nuevo_socio)
             # Solo establecer 'exito' en True si no se lanzó ninguna excepción
             self.exito = True
         except ValueError:
@@ -68,7 +68,6 @@ class CrearSocioWindow:
         if self.exito:
             messagebox.showinfo("Éxito", "Socio guardado con éxito")
                
-            
     def volver_a_admin_socios(self):
         self.root.destroy()  # Cierra la ventana actual
-        self.ventana_admin_socios.root.deiconify()
+        self.ventana_principal.root.deiconify()

@@ -1,25 +1,25 @@
 import tkinter as tk
 from tkinter import ttk
-from ui.ui_guardar_prestamo import CrearGuardarPrestamo
+from ui.ui_registrar_prestamo import RegistrarPrestamosWindow
 
 
-class RegistrarPrestamoWindow:
+class AdministracionPrestamosWindow:
     def __init__(self, root, ventana_principal, db):
         self.root = root
         self.ventana_principal = ventana_principal
         self.root.title("Registrar Prestamo")
         self.db = db
         
-        self.guardar_prestamo_button = tk.Button(root, text="Guardar Prestamo", command=self.abrir_ventana_guardar_prestamo)
-        self.guardar_prestamo_button.pack()
+        self.registrar_prestamo_button = tk.Button(root, text="Registrar Prestamo", command=self.abrir_ventana_registrar_prestamo)
+        self.registrar_prestamo_button.pack()
         
         self.volver_button = tk.Button(root, text="Volver a inicio", command=self.volver_a_inicio)
         self.volver_button.pack()
         
-    def abrir_ventana_guardar_prestamo(self):
+    def abrir_ventana_registrar_prestamo(self):
         self.root.withdraw()
-        ventana_guardar_prestamo = tk.Toplevel(self.root)
-        app = CrearGuardarPrestamo(ventana_guardar_prestamo, self, self.db)
+        ventana_registrar_prestamo = tk.Toplevel(self.root)
+        app = RegistrarPrestamosWindow(ventana_registrar_prestamo, self, self.db)
         
         
     def volver_a_inicio(self):

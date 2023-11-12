@@ -1,7 +1,7 @@
 # administracion_socios.py
 import tkinter as tk
 from tkinter import ttk
-from ui.ui_guardar_socio import CrearSocioWindow
+from ui.ui_registrar_socio import RegistrarSocioWindow
 
 
 class AdministracionSociosWindow:
@@ -11,17 +11,17 @@ class AdministracionSociosWindow:
         self.root.title("Administración de Socios")
         self.db = db
 
-        self.guardar_socio_button = tk.Button(root, text="Guardar Socio", command=self.abrir_ventana_guardar_socio)
-        self.guardar_socio_button.pack()
+        self.registrar_socio_button = tk.Button(root, text="Registrar Socio", command=self.abrir_ventana_registrar_socio)
+        self.registrar_socio_button.pack()
         
         self.volver_button = tk.Button(root, text="Volver a inicio", command=self.volver_a_inicio)
         self.volver_button.pack()
 
 
-    def abrir_ventana_guardar_socio(self):
+    def abrir_ventana_registrar_socio(self):
         self.root.withdraw()
-        ventana_guardar_socio = tk.Toplevel(self.root)
-        app = CrearSocioWindow(ventana_guardar_socio, self, self.db)
+        ventana_registrar_socio = tk.Toplevel(self.root)
+        app = RegistrarSocioWindow(ventana_registrar_socio, self, self.db)
        
     
     def volver_a_inicio(self):
