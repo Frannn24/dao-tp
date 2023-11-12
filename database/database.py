@@ -118,8 +118,7 @@ class BibliotecaDB:
         
         
 
-        def registrar_termino_prestamo(self, id_prestamo):
-
+    def terminar_prestamo(self, id_prestamo):
 
             try:
                 # Validar que el préstamo existe

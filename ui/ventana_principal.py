@@ -5,6 +5,7 @@ from ui.ui_admin_socios import AdministracionSociosWindow  # Agregamos la nueva 
 from ui.ui_admin_libros import AdministracionLibrosWindow
 from ui.ui_admin_prestamos import AdministracionPrestamosWindow 
 from ui.ui_admin_reportes import AdministracionReportesWindow
+from ui.ui_admin_devoluciones import AdministradorDevolucionesWindow
 
 
 
@@ -23,11 +24,13 @@ class VentanaPrincipal:
         self.reg_prestamo_button = tk.Button(root, text="Administracion de Prestamos de libro", command=self.abrir_ventana_admin_prestamo)
         self.reg_prestamo_button.pack()
         
+        self.reg_devolucion_button = tk.Button(root, text="Registrar Devolucion de libro", command=self.abrir_ventana_reg_devolucion)
+        self.reg_devolucion_button.pack()
+        
         self.reg_prestamo_button = tk.Button(root, text="Administracion de Reportes", command=self.abrir_ventana_admin_reportes)
         self.reg_prestamo_button.pack()
         
-        self.reg_devolucion_button = tk.Button(root, text="Registrar Devoluvion de libro", command=self.abrir_ventana_reg_devolucion)
-        self.reg_devolucion_button.pack()
+        
         
     def abrir_ventana_admin_libros(self):
         self.root.withdraw()
@@ -52,10 +55,10 @@ class VentanaPrincipal:
         app = AdministracionReportesWindow(ventana_admin_reportes, self, self.db)
         
     def abrir_ventana_reg_devolucion(self):
-        """
+        
         self.root.withdraw()
         ventana_reg_devolucion = tk.Toplevel(self.root)
-        app = RegistrarDevolucionWindow(ventana_reg_devolucion, self, self.db)
-        """
+        app = AdministradorDevolucionesWindow(ventana_reg_devolucion, self, self.db)
+        
     def volver_a_inicio(self):
         self.root.deiconify()  # Vuelve a mostrar la ventana de inicio
