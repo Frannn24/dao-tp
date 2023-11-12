@@ -117,11 +117,10 @@ class BibliotecaDB:
             messagebox.showerror("Error", f"Error al guardar el préstamo: {str(e)}")
         
         
-<<<<<<< HEAD
+
         def registrar_termino_prestamo(self, id_prestamo):
-=======
-    def terminar_prestamo(self, id_prestamo):
->>>>>>> d4da1c1c9074e2a8bc94eadbf4863dfd5ed0b9eb
+
+
             try:
                 # Validar que el préstamo existe
                 with self.conn:

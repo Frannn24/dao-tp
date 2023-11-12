@@ -50,6 +50,12 @@ class VentanaPrincipal:
         self.root.withdraw()
         ventana_admin_reportes = tk.Toplevel(self.root)
         app = AdministracionReportesWindow(ventana_admin_reportes, self, self.db)
-   
+        
+    def abrir_ventana_reg_devolucion(self):
+        """
+        self.root.withdraw()
+        ventana_reg_devolucion = tk.Toplevel(self.root)
+        app = RegistrarDevolucionWindow(ventana_reg_devolucion, self, self.db)
+        """
     def volver_a_inicio(self):
         self.root.deiconify()  # Vuelve a mostrar la ventana de inicio
