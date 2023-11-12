@@ -21,7 +21,6 @@ class BibliotecaDB:
             CREATE TABLE IF NOT EXISTS socios (
                 id_socio INTEGER PRIMARY KEY,
                 nombre TEXT NOT NULL,
-                id_prestamo INTEGER
                 eliminado INTEGER DEFAULT 0
             )
         """)
@@ -33,22 +32,31 @@ class BibliotecaDB:
                 id_libro INTEGER,
                 estado INTEGER, 
                 fecha_prestamo TEXT,
-                fecha_devolucion TEXT
+                fecha_devolucion TEXT,
+                FOREIGN KEY (id_socio) REFERENCES socios (id_socio),
+                FOREIGN KEY (id_libro) REFERENCES libros (codigo)
             )
         ''')
 
 
     def registrar_libro(self, libro):
         try:
-            self.cursor.execute("INSERT INTO libros (codigo, titulo, precio_reposicion, estado) VALUES (?, ?, ?, ?)",
-                                (int(libro.codigo), str(libro.titulo), float(libro.precio_reposicion), "Disponible"))
-            self.conn.commit()
-        except sqlite3.IntegrityError:
-            # Si se produce una excepción de integridad, significa que el código ya existe
-            mensaje_error = "El código ya existe en la base de datos."
-            messagebox.showerror("Error", mensaje_error)  # Muestra un cuadro de diálogo de error
-            # No es necesario volver a lanzar la excepción aquí
-            
+            # Verificar si el código de libro ya existe
+            self.cursor.execute("SELECT codigo FROM libros WHERE codigo = ?", (libro.codigo,))
+            existe_libro = self.cursor.fetchone()
+
+            if existe_libro:
+                mensaje_error = "El código de libro ya existe en la base de datos. Por favor, ingrese un código único."
+                messagebox.showerror("Error", mensaje_error)
+            else:
+                # Insertar el nuevo libro
+                self.cursor.execute("INSERT INTO libros (codigo, titulo, precio_reposicion, estado) VALUES (?, ?, ?, ?)",
+                                    (int(libro.codigo), str(libro.titulo), float(libro.precio_reposicion), "Disponible"))
+                self.conn.commit()
+                messagebox.showinfo("Éxito", "Libro registrado con éxito")
+
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"Error al guardar el libro: {str(e)}")
     
     def registrar_socio(self, socio):
         try:
@@ -175,8 +183,6 @@ class BibliotecaDB:
 
             except sqlite3.Error as e:
                 messagebox.showerror("Error", f"Error al terminar el préstamo: {str(e)}")
-
-
 
     
     def cerrar(self):

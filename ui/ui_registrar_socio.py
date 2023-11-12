@@ -47,26 +47,9 @@ class RegistrarSocioWindow:
             mensaje_error = "El ID debe ser números enteros positivos."
             messagebox.showerror("Error", mensaje_error)
             return  # Detiene la ejecución en caso de error de validación
-
-        try:
-            nuevo_socio = Socio(id_socio, nombre)
-            self.db.registrar_socio(nuevo_socio)
-            # Solo establecer 'exito' en True si no se lanzó ninguna excepción
-            self.exito = True
-        except ValueError:
-            mensaje_error = "El ID de socio debe ser un número entero."
-            messagebox.showerror("Error", mensaje_error)
-            self.exito = False
-            return
-        except sqlite3.IntegrityError:
-            mensaje_error = "El ID de socio ya existe en la base de datos. Por favor, ingrese un ID único."
-            messagebox.showerror("Error", mensaje_error)
-            self.exito = False
-            return
-
-        # Muestra el mensaje de éxito solo si no se lanzó ninguna excepción
-        if self.exito:
-            messagebox.showinfo("Éxito", "Socio guardado con éxito")
+        nuevo_socio = Socio(id_socio, nombre)
+        self.db.registrar_socio(nuevo_socio)
+        
                
     def volver_a_admin_socios(self):
         self.root.destroy()  # Cierra la ventana actual

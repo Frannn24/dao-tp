@@ -63,18 +63,9 @@ class RegistrarLibroWindow:
             messagebox.showerror("Error", mensaje_error)
             return  # Detiene la ejecución en caso de error de validación
 
-        try:
-            nuevo_libro = Libro(codigo, titulo, precio_reposicion)
-            self.db.registrar_libro(nuevo_libro)
-            self.exito = True
-        except sqlite3.IntegrityError:
-            mensaje_error = "El código ya existe en la base de datos. Por favor, ingrese un código único."
-            messagebox.showerror("Error", mensaje_error)
-            self.exito = False
-
-        if self.exito:
-            messagebox.showinfo("Éxito", "Libro guardado con éxito")
-   
+        nuevo_libro = Libro(codigo, titulo, precio_reposicion)
+        self.db.registrar_libro(nuevo_libro)
+        
    
     def volver_a_admin_socios(self):
         self.root.destroy()  # Cierra la ventana actual

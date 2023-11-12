@@ -6,7 +6,7 @@ class Prestamo:
         # Constructor para crear un objeto Prestamo
         self.libro = libro
         self.socio = socio
-        self.estado = 1
+        self.estado = "Dispobible"
         self.fecha_prestamo = fecha_prestamo
         self.fecha_devolucion = fecha_devolucion
 
