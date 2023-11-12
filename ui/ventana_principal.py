@@ -11,28 +11,37 @@ from ui.ui_admin_extravios import AdministracionExtraviosWindow
 
 
 class VentanaPrincipal:
+    _instance = None  # Variable de clase para almacenar la instancia única
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+    
     def __init__(self, root, db):
-        self.root = root
-        self.root.title("Biblioteca")
-        self.db = db
-        
-        self.admin_libros_button = tk.Button(root, text="Administración de Libros", command=self.abrir_ventana_admin_libros)
-        self.admin_libros_button.pack()
-        
-        self.admin_socios_button = tk.Button(root, text="Administración de Socios", command=self.abrir_ventana_admin_socios)
-        self.admin_socios_button.pack()
-        
-        self.reg_prestamo_button = tk.Button(root, text="Administracion de Prestamos de libro", command=self.abrir_ventana_admin_prestamo)
-        self.reg_prestamo_button.pack()
-        
-        self.reg_devolucion_button = tk.Button(root, text="Registrar Devolucion de libro", command=self.abrir_ventana_reg_devolucion)
-        self.reg_devolucion_button.pack()
-        
-        self.reg_extravio_button = tk.Button(root, text="Registrar Extravio de libro", command=self.abrir_ventana_reg_extravio)
-        self.reg_extravio_button.pack()
-        
-        self.reg_prestamo_button = tk.Button(root, text="Administracion de Reportes", command=self.abrir_ventana_admin_reportes)
-        self.reg_prestamo_button.pack()
+        if not hasattr(self, 'initialized'):  # Asegura que la inicialización solo se haga una vez
+            self.initialized = True
+            self.root = root
+            self.root.title("Biblioteca")
+            self.db = db
+            
+            self.admin_libros_button = tk.Button(root, text="Administración de Libros", command=self.abrir_ventana_admin_libros)
+            self.admin_libros_button.pack()
+            
+            self.admin_socios_button = tk.Button(root, text="Administración de Socios", command=self.abrir_ventana_admin_socios)
+            self.admin_socios_button.pack()
+            
+            self.reg_prestamo_button = tk.Button(root, text="Administracion de Prestamos de libro", command=self.abrir_ventana_admin_prestamo)
+            self.reg_prestamo_button.pack()
+            
+            self.reg_devolucion_button = tk.Button(root, text="Registrar Devolucion de libro", command=self.abrir_ventana_reg_devolucion)
+            self.reg_devolucion_button.pack()
+            
+            self.reg_extravio_button = tk.Button(root, text="Registrar Extravio de libro", command=self.abrir_ventana_reg_extravio)
+            self.reg_extravio_button.pack()
+            
+            self.reg_prestamo_button = tk.Button(root, text="Administracion de Reportes", command=self.abrir_ventana_admin_reportes)
+            self.reg_prestamo_button.pack()
         
         
         

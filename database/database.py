@@ -83,6 +83,9 @@ class BibliotecaDB:
    
     def registrar_prestamo(self, id_socio, id_libro, fecha_prestamo, fecha_devolucion):
         try:
+            fecha_prestamo = datetime.strptime(fecha_prestamo, "%Y-%m-%d %H:%M:%S")  # Ajuste aquí
+            fecha_devolucion = datetime.strptime(fecha_devolucion, "%Y-%m-%d %H:%M:%S")  # Ajuste aquí
+
             # Validar que id_socio existe en la tabla socios
             with self.conn:
                 self.cursor.execute("SELECT id_socio FROM socios WHERE id_socio = ?", (id_socio,))
@@ -114,7 +117,7 @@ class BibliotecaDB:
                 return
 
             # Si todos los criterios se cumplen, proceder con la inserción del préstamo
-            # El estado es 1 para prestamo en curso, 2 terminado
+            # El estado es 1 para préstamo en curso, 2 terminado
             with self.conn:
                 self.cursor.execute('''
                     INSERT INTO prestamo (id_socio, id_libro, estado, fecha_prestamo, fecha_devolucion)
@@ -122,51 +125,53 @@ class BibliotecaDB:
                 ''', (id_socio, id_libro, fecha_prestamo, fecha_devolucion))
                 self.cursor.execute("UPDATE libros SET estado = 'Prestado' WHERE codigo = ?", (id_libro,))
 
-            mensaje_exito = f"Prestamo registrado con éxito:\nID Socio: {int(id_socio)}\nCodigo libro: {str(id_libro)}\nFecha de prestamo: {str(fecha_prestamo)}\nFecha de devolucion: {str(fecha_devolucion)}"    
+            mensaje_exito = f"Prestamo registrado con éxito:\nID Socio: {int(id_socio)}\nCodigo libro: {str(id_libro)}\nFecha de prestamo: {fecha_prestamo.strftime('%d/%m/%Y')}\nFecha de devolucion: {fecha_devolucion.strftime('%d/%m/%Y')}"
             messagebox.showinfo("Éxito", mensaje_exito)
         except sqlite3.Error as e:
             messagebox.showerror("Error", f"Error al guardar el préstamo: {str(e)}")
-        
-        
 
     def terminar_prestamo(self, id_prestamo):
+        try:
+            # Validar que el préstamo existe
+            with self.conn:
+                self.cursor.execute("SELECT id_prestamo, id_libro, fecha_prestamo, fecha_devolucion FROM prestamo WHERE id_prestamo = ?", (id_prestamo,))
+                prestamo_info = self.cursor.fetchone()
 
-            try:
-                # Validar que el préstamo existe
-                with self.conn:
-                    self.cursor.execute("SELECT id_prestamo, id_libro FROM prestamo WHERE id_prestamo = ?", (id_prestamo,))
-                    prestamo_info = self.cursor.fetchone()
+            if not prestamo_info:
+                mensaje_error = "El ID de préstamo no existe en la base de datos. Por favor, ingrese un ID de préstamo válido."
+                messagebox.showerror("Error", mensaje_error)
+                return
 
-                if not prestamo_info:
-                    mensaje_error = "El ID de préstamo no existe en la base de datos. Por favor, ingrese un ID de préstamo válido."
-                    messagebox.showerror("Error", mensaje_error)
-                    return
+            # Convertir las cadenas de fecha a objetos datetime
+            fecha_prestamo = datetime.strptime(prestamo_info[2], '%Y-%m-%d %H:%M:%S')
+            fecha_devolucion = datetime.strptime(prestamo_info[3], '%Y-%m-%d %H:%M:%S')
 
-                # Cambiar el estado del préstamo a 2 (indicando que está terminado)
-                with self.conn:
-                    self.cursor.execute("UPDATE prestamo SET estado = 2 WHERE id_prestamo = ?", (id_prestamo,))
+            # Cambiar el estado del préstamo a 2 (indicando que está terminado)
+            with self.conn:
+                self.cursor.execute("UPDATE prestamo SET estado = 2 WHERE id_prestamo = ?", (id_prestamo,))
 
-                    # Cambiar el estado del libro a "Disponible" en la tabla libros
-                    self.cursor.execute("UPDATE libros SET estado = 'Disponible' WHERE codigo = ?", (prestamo_info[1],))
+                # Cambiar el estado del libro a "Disponible" en la tabla libros
+                self.cursor.execute("UPDATE libros SET estado = 'Disponible' WHERE codigo = ?", (prestamo_info[1],))
 
-                messagebox.showinfo("Éxito", "Préstamo terminado con éxito. Libro marcado como 'Disponible'.")
+            mensaje_exito = f"Préstamo terminado con éxito. Libro marcado como 'Disponible'."
+            messagebox.showinfo("Éxito", mensaje_exito)
 
-            except sqlite3.Error as e:
-                messagebox.showerror("Error", f"Error al terminar el préstamo: {str(e)}")
-        
-        
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"Error al terminar el préstamo: {str(e)}")
+
     def terminar_prestamo_extravio_danio(self, id_prestamo):
-            try:
-                # Validar que el préstamo existe
-                with self.conn:
-                    self.cursor.execute("SELECT id_prestamo, id_libro FROM prestamo WHERE id_prestamo = ?", (id_prestamo,))
-                    prestamo_info = self.cursor.fetchone()
+        try:
+            # Validar que el préstamo existe
+            with self.conn:
+                self.cursor.execute("SELECT id_prestamo, id_libro, estado FROM prestamo WHERE id_prestamo = ?", (id_prestamo,))
+                prestamo_info = self.cursor.fetchone()
 
-                if not prestamo_info:
-                    mensaje_error = "El ID de préstamo no existe en la base de datos. Por favor, ingrese un ID de préstamo válido."
-                    messagebox.showerror("Error", mensaje_error)
-                    return
+            if not prestamo_info:
+                mensaje_error = "El ID de préstamo no existe en la base de datos. Por favor, ingrese un ID de préstamo válido."
+                messagebox.showerror("Error", mensaje_error)
+                return
 
+            if prestamo_info[2] == 1:  # Verificar si el estado del préstamo es 'En curso'
                 # Obtener el precio_reposicion del libro
                 with self.conn:
                     self.cursor.execute("SELECT precio_reposicion FROM libros WHERE codigo = ?", (prestamo_info[1],))
@@ -176,45 +181,70 @@ class BibliotecaDB:
                 with self.conn:
                     self.cursor.execute("UPDATE prestamo SET estado = 2 WHERE id_prestamo = ?", (id_prestamo,))
 
-                    # Cambiar el estado del libro a "Disponible" en la tabla libros
-                    self.cursor.execute("UPDATE libros SET estado = 'Disponible' WHERE codigo = ?", (prestamo_info[1],))
+                    if prestamo_info[2] == 'Extraviado':
+                        # Cambiar el estado del libro a "Disponible" solo si el estado del préstamo es 'Extraviado'
+                        self.cursor.execute("UPDATE libros SET estado = 'Disponible' WHERE codigo = ?", (prestamo_info[1],))
 
-                mensaje_exito = f"Préstamo ID: {(id_prestamo)} - terminado con éxito. \nLibro  marcado como 'Disponible'.\n"
-                mensaje_exito += f"Precio Reposición del libro: {precio_reposicion}$."
+                        mensaje_exito = f"Préstamo ID: {(id_prestamo)} - terminado con éxito. \nLibro  marcado como 'Disponible'.\n"
+                        mensaje_exito += f"Precio Reposición del libro: {precio_reposicion}$."
 
-                messagebox.showinfo("Éxito", mensaje_exito)
+                        messagebox.showinfo("Éxito", mensaje_exito)
+                    else:
+                        messagebox.showinfo("Éxito", "Préstamo terminado con éxito. Libro no marcado como 'Disponible' debido a que no está Extraviado.")
+            else:
+                messagebox.showinfo("Éxito", "Préstamo ya terminado o no está en curso.")
 
-            except sqlite3.Error as e:
-                messagebox.showerror("Error", f"Error al terminar el préstamo: {str(e)}")
-                
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"Error al terminar el préstamo: {str(e)}")
+
     def registrar_extraviados(self, prestamo_id):
-            try:
-                with self.conn:
-                    self.cursor.execute("SELECT id_prestamo, id_libro FROM prestamo WHERE id_prestamo = ?", (prestamo_id))
-                    prestamo_info = self.cursor.fetchone()
-                    
-                    if not prestamo_info:
-                        mensaje_error = "El ID de préstamo no existe en la base de datos. Por favor, ingrese un ID de préstamo válido."
-                        messagebox.showerror("Error", mensaje_error)
-                        return
-                    
-                    with self.conn:
-                        self.cursor.execute("SELECT fecha_devolucion FROM prestamo WHERE id_prestamo = ?", (prestamo_id))
-                        fecha_devolucion = self.cursor.fetchone()
-                        fecha_mes = fecha_devolucion + timedelta(days=30)
-                    
-                    if datetime.now < (fecha_mes):
-                        mensaje_error = "La fecha actual no es mayor a los 30 dias pactados."
-                        messagebox.showerror("Error", mensaje_error)
-                        return
+        try:
+            with self.conn:
+                self.cursor.execute("SELECT id_prestamo, id_libro, fecha_devolucion FROM prestamo WHERE id_prestamo = ?", (prestamo_id,))
+                prestamo_info = self.cursor.fetchone()
+
+                if not prestamo_info:
+                    mensaje_error = "El ID de préstamo no existe en la base de datos. Por favor, ingrese un ID de préstamo válido."
+                    messagebox.showerror("Error", mensaje_error)
+                    return
+
+                fecha_devolucion = datetime.strptime(prestamo_info[2], '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%Y')  # Ajuste aquí
+
+                # Verificar si la fecha actual es mayor a 30 días después de la fecha de devolución
+                if datetime.now() < (fecha_devolucion + timedelta(days=30)):
+                    mensaje_error = "La fecha actual no es mayor a los 30 días pactados."
+                    messagebox.showerror("Error", mensaje_error)
+                    return
+
                 with self.conn:
                     self.cursor.execute("UPDATE libros SET estado = 'Extraviado' WHERE codigo = ?", (prestamo_info[1],))
-                mensaje_exito = f"Libro ID: {prestamo_info[1]} registrado como extraviado con exito."
-                messagebox.showinfo("Éxito", mensaje_exito)
-            except sqlite3.Error as e:
-                messagebox.showerror("Error", f"Error al registrar el extravio del prestamo: {prestamo_id}")
-                            
 
+                mensaje_exito = f"Libro ID: {prestamo_info[1]} registrado como extraviado con éxito."
+                messagebox.showinfo("Éxito", mensaje_exito)
+
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"Error al registrar el extravío del préstamo: {prestamo_id}")
+               
+   
+    
+    # En un método para verificar libros extraviados
+    def verificar_libros_extraviados(self):
+        try:
+            # Obtener los préstamos con más de 30 días de demora
+            with self.conn:
+                self.cursor.execute("SELECT id_prestamo, id_libro FROM prestamo WHERE estado = 1 AND (julianday('now') - julianday(fecha_devolucion)) > 30")
+                libros_extraviados = self.cursor.fetchall()
+
+            # Cambiar el estado de los libros a 'Extraviado'
+            for prestamo_info in libros_extraviados:
+                with self.conn:
+                    self.cursor.execute("UPDATE libros SET estado = 'Extraviado' WHERE codigo = ?", (prestamo_info[1],))
+
+            mensaje_exito = f"{len(libros_extraviados)} libros marcados como 'Extraviados'."
+            messagebox.showinfo("Éxito", mensaje_exito)
+
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"Error al verificar libros extraviados: {str(e)}")
     
     def cerrar(self):
         self.conn.close()

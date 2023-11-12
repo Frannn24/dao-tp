@@ -1,3 +1,5 @@
+#ui_admin_reportes.py
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -21,9 +23,10 @@ class AdministracionReportesWindow:
         # Initially hide the frame
         self.frame_resultados.pack_forget()
 
-        self.volver_button = tk.Button(self.frame_botones, text="Volver a inicio", command=self.volver_a_inicio)
-        self.volver_button.pack()
-
+        # Botón para vaciar el frame de resultados
+        self.vaciar_resultados_button = tk.Button(self.frame_botones, text="Vaciar Resultados", command=self.vaciar_resultados)
+        self.vaciar_resultados_button.pack()
+        
         # Botones para cada reporte
         self.libros_estado_button = tk.Button(self.frame_botones, text="Libros por Estado", command=self.mostrar_libros_por_estado)
         self.libros_estado_button.pack()
@@ -37,9 +40,11 @@ class AdministracionReportesWindow:
         self.prestamos_socio_button = tk.Button(self.frame_botones, text="Prestamos por Socio", command=self.mostrar_prestamos_socio)
         self.prestamos_socio_button.pack()
 
-        # Botón para vaciar el frame de resultados
-        self.vaciar_resultados_button = tk.Button(self.frame_botones, text="Vaciar Resultados", command=self.vaciar_resultados)
-        self.vaciar_resultados_button.pack()
+        self.prestamos_demorado_button = tk.Button(self.frame_botones, text="Prestamos Demorados", command=self.mostrar_prestamos_demorados)
+        self.prestamos_demorado_button.pack()
+        
+        self.volver_button = tk.Button(self.frame_botones, text="Volver a inicio", command=self.volver_a_inicio)
+        self.volver_button.pack()
 
         # Área para mostrar los resultados
         self.treeview = ttk.Treeview(self.frame_resultados, columns=('', ''), show='headings')
@@ -55,6 +60,7 @@ class AdministracionReportesWindow:
         self.treeview['columns'] = ('Estado', 'Cantidad')
         self.treeview.heading('Estado', text='Estado')
         self.treeview.heading('Cantidad', text='Cantidad')
+
         try:
             # Obtener la cantidad de libros en cada estado
             with self.db.conn:
@@ -74,6 +80,14 @@ class AdministracionReportesWindow:
 
         except sqlite3.Error as e:
             messagebox.showerror("Error", f"Error al obtener la información: {str(e)}")
+
+    def vaciar_resultados(self):
+        # Limpiar la tabla
+        for i in self.treeview.get_children():
+            self.treeview.delete(i)
+
+        # Ocultar el frame de resultados
+        self.frame_resultados.pack_forget()
 
     def mostrar_suma_precio_extraviados(self):
         # Cambiar las columnas del Treeview según el botón presionado
@@ -179,6 +193,42 @@ class AdministracionReportesWindow:
 
         except sqlite3.Error as e:
             messagebox.showerror("Error", f"Error al obtener la información: {str(e)}")
+            
+    def mostrar_prestamos_demorados(self):
+        # Cambiar las columnas del Treeview según el botón presionado
+        self.treeview['columns'] = ('ID Préstamo', 'ID Libro', 'Fecha Préstamo', 'Fecha Devolución', 'Días de Demora')
+        self.treeview.heading('ID Préstamo', text='ID Préstamo')
+        self.treeview.heading('ID Libro', text='ID Libro')
+        self.treeview.heading('Fecha Préstamo', text='Fecha Préstamo')
+        self.treeview.heading('Fecha Devolución', text='Fecha Devolución')
+        self.treeview.heading('Días de Demora', text='Días de Demora')
+    
+        try:
+            # Obtener préstamos demorados
+            with self.db.conn:
+                self.db.cursor.execute("""
+                    SELECT id_prestamo, id_libro, fecha_prestamo, fecha_devolucion,
+                           (julianday('now') - julianday(fecha_devolucion)) AS dias_demora
+                    FROM prestamo
+                    WHERE estado = 1 AND datetime('now') > datetime(fecha_devolucion)
+                """)
+                prestamos_demorados = self.db.cursor.fetchall()
+    
+            # Limpiar la tabla
+            for i in self.treeview.get_children():
+                self.treeview.delete(i)
+    
+            # Agregar préstamos demorados a la tabla
+            for prestamo in prestamos_demorados:
+                self.treeview.insert('', 'end', values=prestamo)
+    
+            # Mostrar el frame de resultados
+            self.frame_resultados.pack()
+    
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"Error al obtener la información: {str(e)}")
+
+
 
 
     def vaciar_resultados(self):

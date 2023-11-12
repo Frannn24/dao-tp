@@ -1,3 +1,5 @@
+#ui_admin_devoluciones.py
+
 import tkinter as tk
 from tkinter import ttk
 from ui.ui_registrar_devolucion import RegistrarDevolucionWindow
