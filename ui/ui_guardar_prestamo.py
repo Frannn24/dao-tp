@@ -15,11 +15,11 @@ class CrearGuardarPrestamo:
         self.ventana_principal = ventana_principal
 
 
-        # Labels
         self.id_socio_label = tk.Label(root, text="ID Socio:")
         self.id_socio_label.pack()
         self.entry_id_socio = tk.Entry(root)
         self.entry_id_socio.pack()
+        
         
         self.id_libro_label =tk.Label(root, text="ID Libro:")
         self.id_libro_label.pack()
@@ -42,8 +42,10 @@ class CrearGuardarPrestamo:
         self.guardar_prestamo_button = tk.Button(root, text="Guardar Prestamo", command=self.guardar_prestamo)
         self.guardar_prestamo_button.pack()
         
+        
         self.volver_button = tk.Button(root, text="Volver a Registrar Prestamo", command=self.volver_a_reg_prestamos)
         self.volver_button.pack()
+
 
     def guardar_prestamo(self):
         id_socio = self.entry_id_socio.get()
@@ -55,6 +57,7 @@ class CrearGuardarPrestamo:
             messagebox.showerror("Error", "Por favor, complete todos los campos.")
             return
         self.db.guardar_prestamo(id_socio, id_libro, fecha_prestamo, fecha_devolucion)
+        
         
     def volver_a_reg_prestamos(self):
         self.root.destroy()  # Cierra la ventana actual
