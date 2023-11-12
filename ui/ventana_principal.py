@@ -6,6 +6,7 @@ from ui.ui_admin_libros import AdministracionLibrosWindow
 from ui.ui_admin_prestamos import AdministracionPrestamosWindow 
 from ui.ui_admin_reportes import AdministracionReportesWindow
 from ui.ui_admin_devoluciones import AdministradorDevolucionesWindow
+from ui.ui_admin_extravios import AdministracionExtraviosWindow
 
 
 
@@ -26,6 +27,9 @@ class VentanaPrincipal:
         
         self.reg_devolucion_button = tk.Button(root, text="Registrar Devolucion de libro", command=self.abrir_ventana_reg_devolucion)
         self.reg_devolucion_button.pack()
+        
+        self.reg_extravio_button = tk.Button(root, text="Registrar Extravio de libro", command=self.abrir_ventana_reg_extravio)
+        self.reg_extravio_button.pack()
         
         self.reg_prestamo_button = tk.Button(root, text="Administracion de Reportes", command=self.abrir_ventana_admin_reportes)
         self.reg_prestamo_button.pack()
@@ -59,6 +63,11 @@ class VentanaPrincipal:
         self.root.withdraw()
         ventana_reg_devolucion = tk.Toplevel(self.root)
         app = AdministradorDevolucionesWindow(ventana_reg_devolucion, self, self.db)
+    
+    def abrir_ventana_reg_extravio(self):
+        self.root.withdraw()
+        ventana_reg_extravio = tk.Toplevel(self.root)
+        app = AdministracionExtraviosWindow(ventana_reg_extravio, self, self.db)
         
     def volver_a_inicio(self):
         self.root.deiconify()  # Vuelve a mostrar la ventana de inicio
