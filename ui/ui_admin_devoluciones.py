@@ -12,11 +12,21 @@ class AdministradorDevolucionesWindow():
         self.root.title("Administrados Devoluciones")
         self.db = db
         
-        self.guardar_devolucion_button = tk.Button(root, text="Registrar Devolución", command=self.abrir_ventana_registrar_devolucion)
-        self.guardar_devolucion_button.pack()
-        
-        self.volver_button = tk.Button(root, text="Volver a inicio", command=self.volver_a_inicio)
-        self.volver_button.pack()
+        # Configuración de estilo
+        self.root.configure(bg='#EFEFEF')  # Color de fondo
+        button_style = {'bg': '#4CAF50', 'fg': 'white', 'font': ('Arial', 12)}
+        title_style = {'bg': '#EFEFEF', 'fg': '#333333', 'font': ('Arial', 20, 'bold')}
+
+        # División en dos frames
+        self.frame_botones = tk.Frame(root, bg='#EFEFEF')
+        self.frame_botones.pack(side=tk.LEFT, padx=10, pady=10)
+
+        # Botones
+        self.guardar_devolucion_button = tk.Button(self.frame_botones, text="Registrar Devolución", command=self.abrir_ventana_registrar_devolucion, **button_style)
+        self.guardar_devolucion_button.pack(pady=5, fill=tk.X)
+
+        self.volver_button = tk.Button(self.frame_botones, text="Volver a inicio", command=self.volver_a_inicio, **button_style)
+        self.volver_button.pack(pady=5, fill=tk.X)
         
     def abrir_ventana_registrar_devolucion(self):
         self.root.withdraw()

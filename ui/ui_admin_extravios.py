@@ -13,28 +13,60 @@ class AdministracionExtraviosWindow:
         self.db = db
         self.libros_prestados = []  # Lista para almacenar libros prestados
 
-        # Primer frame con botones
-        self.frame_botones = tk.Frame(root)
+        # Configuración de estilo
+        self.root.configure(bg='#EFEFEF')  # Color de fondo
+        button_style = {'bg': '#4CAF50', 'fg': 'white', 'font': ('Arial', 12)}
+        title_style = {'bg': '#EFEFEF', 'fg': '#333333', 'font': ('Arial', 20, 'bold')}
+
+        # División en dos frames
+        self.frame_botones = tk.Frame(root, bg='#EFEFEF')
         self.frame_botones.pack(side=tk.LEFT, padx=10, pady=10)
 
-        self.mostrar_libros_button = tk.Button(self.frame_botones, text="Mostrar Libros", command=self.mostrar_libros)
-        self.mostrar_libros_button.pack()
-
-        self.guardar_extravio_button = tk.Button(self.frame_botones, text="Registrar Extravío", command=self.registrar_extravio)
-        self.guardar_extravio_button.pack()
-
-        self.volver_button = tk.Button(self.frame_botones, text="Volver a inicio", command=self.volver_a_inicio)
-        self.volver_button.pack()
-
-        # Segundo frame con lista de libros prestados y fecha de devolución superada
-        self.frame_resultados = tk.Frame(root)
+        self.frame_resultados = tk.Frame(root, bg='#EFEFEF')
         self.frame_resultados.pack(side=tk.RIGHT, padx=10, pady=10)
 
-        self.treeview = ttk.Treeview(self.frame_resultados, columns=('ID Libro', 'Fecha Devolución', 'Días de Demora'), show='headings')
+        # Configurar tamaño de la ventana principal y centrar en la pantalla
+        self.root.geometry("800x600")  # Puedes ajustar este tamaño según tus preferencias
+        self.center_window()
+
+        # Manejar eventos de cambio de tamaño de la ventana
+        self.root.bind("<Configure>", self.on_resize)
+
+        self.mostrar_libros_button = tk.Button(self.frame_botones, text="Mostrar Libros", command=self.mostrar_libros, **button_style)
+        self.mostrar_libros_button.pack(pady=5, fill=tk.X)
+
+        self.guardar_extravio_button = tk.Button(self.frame_botones, text="Registrar Extravío", command=self.registrar_extravio, **button_style)
+        self.guardar_extravio_button.pack(pady=5, fill=tk.X)
+
+        self.volver_button = tk.Button(self.frame_botones, text="Volver a inicio", command=self.volver_a_inicio, **button_style)
+        self.volver_button.pack(pady=5, fill=tk.X)
+
+        # Área para mostrar los resultados
+        self.treeview = ttk.Treeview(self.frame_resultados, columns=('ID Libro', 'Fecha Devolución', 'Días de Demora'), show='headings', style='Custom.Treeview')
         self.treeview.heading('ID Libro', text='ID Libro')
         self.treeview.heading('Fecha Devolución', text='Fecha Devolución')
         self.treeview.heading('Días de Demora', text='Días de Demora')
-        self.treeview.pack(fill=tk.BOTH, expand=True)
+        self.treeview.pack(fill=tk.BOTH, expand=True)  # Agregado este comando para mostrar el Treeview
+
+        # Configurar estilo para la tabla
+        style = ttk.Style()
+        style.configure("Custom.Treeview.Heading", font=('Arial', 12, 'bold'))
+        style.configure("Custom.Treeview", highlightthickness=0, bd=0, font=('Arial', 11))
+        style.layout("Custom.Treeview", [('Custom.Treeview.treearea', {'sticky': 'nswe'})])
+
+    def center_window(self):
+        # Centrar la ventana en la pantalla
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        window_width = self.root.winfo_reqwidth()
+        window_height = self.root.winfo_reqheight()
+        x = int((screen_width - window_width) / 2)
+        y = int((screen_height - window_height) / 2)
+        self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+    def on_resize(self, event):
+        # Manejar evento de cambio de tamaño de la ventana
+        self.center_window()
 
     def mostrar_libros(self):
         try:

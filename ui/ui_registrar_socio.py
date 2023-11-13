@@ -14,23 +14,49 @@ class RegistrarSocioWindow:
         self.db = db
         self.exito = False  # Variable para controlar si el socio se guardó con éxito
 
-        self.id_socio_label = tk.Label(root, text="ID:")
-        self.id_socio_label.pack()
-        self.id_socio_entry = tk.Entry(root)
-        self.id_socio_entry.pack()
+        # Configuración de estilo
+        self.root.configure(bg='#EFEFEF')  # Color de fondo
+        label_style = {'bg': '#EFEFEF', 'fg': '#333333', 'font': ('Arial', 12)}
+        entry_style = {'bg': '#FFFFFF', 'fg': '#333333', 'font': ('Arial', 12)}
+        button_style = {'bg': '#4CAF50', 'fg': 'white', 'font': ('Arial', 12)}
 
-        self.nombre_label = tk.Label(root, text="Nombre:")
-        self.nombre_label.pack()
-        self.nombre_entry = tk.Entry(root)
-        self.nombre_entry.pack()
+        self.id_socio_label = tk.Label(root, text="ID:", **label_style)
+        self.id_socio_label.pack(pady=5)
+        self.id_socio_entry = tk.Entry(root, **entry_style)
+        self.id_socio_entry.pack(pady=5)
 
+        self.nombre_label = tk.Label(root, text="Nombre:", **label_style)
+        self.nombre_label.pack(pady=5)
+        self.nombre_entry = tk.Entry(root, **entry_style)
+        self.nombre_entry.pack(pady=5)
 
-        self.registrar_socio_button = tk.Button(root, text="Registrar Socio", command=self.registrar_socio)
-        self.registrar_socio_button.pack()
+        self.registrar_socio_button = tk.Button(root, text="Registrar Socio", command=self.registrar_socio, **button_style)
+        self.registrar_socio_button.pack(pady=10)
 
-        self.volver_button = tk.Button(root, text="Volver a Administración de Socios", command=self.volver_a_admin_socios)
-        self.volver_button.pack()
+        self.volver_button = tk.Button(root, text="Volver a Administración de Socios", command=self.volver_a_admin_socios, **button_style)
+        self.volver_button.pack(pady=10)
 
+        # Configurar tamaño de la ventana y centrar en la pantalla
+        self.root.geometry("400x300")  # Puedes ajustar este tamaño según tus preferencias
+        self.center_window()
+        
+        # Manejar eventos de cambio de tamaño de la ventana
+        self.root.bind("<Configure>", self.on_resize)
+
+    def center_window(self):
+        # Centrar la ventana en la pantalla
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        window_width = self.root.winfo_reqwidth()
+        window_height = self.root.winfo_reqheight()
+        x = int((screen_width - window_width) / 2)
+        y = int((screen_height - window_height) / 2)
+        self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+        
+    def on_resize(self, event):
+        # Manejar evento de cambio de tamaño de la ventana
+        self.center_window()
+        
     def registrar_socio(self):
         id_socio = self.id_socio_entry.get()
         nombre = self.nombre_entry.get()

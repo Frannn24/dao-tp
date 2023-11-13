@@ -14,29 +14,56 @@ class RegistrarLibroWindow:
         self.db = db
         self.exito = False  # Variable para controlar si el libro se guardó con éxito
 
-        self.codigo_label = tk.Label(root, text="Código:")
-        self.codigo_label.pack()
-        self.codigo_entry = tk.Entry(root)
-        self.codigo_entry.pack()
+        # Configuración de estilo
+        self.root.configure(bg='#EFEFEF')  # Color de fondo
+        label_style = {'bg': '#EFEFEF', 'fg': '#333333', 'font': ('Arial', 12)}
+        entry_style = {'bg': '#FFFFFF', 'fg': '#333333', 'font': ('Arial', 12)}
+        button_style = {'bg': '#4CAF50', 'fg': 'white', 'font': ('Arial', 12)}
 
-        self.titulo_label = tk.Label(root, text="Título:")
-        self.titulo_label.pack()
-        self.titulo_entry = tk.Entry(root)
-        self.titulo_entry.pack()
+        self.codigo_label = tk.Label(root, text="Código:", **label_style)
+        self.codigo_label.pack(pady=5)
+        self.codigo_entry = tk.Entry(root, **entry_style)
+        self.codigo_entry.pack(pady=5)
 
-        self.precio_reposicion_label = tk.Label(root, text="Precio de Reposición:")
-        self.precio_reposicion_label.pack()
-        self.precio_reposicion_entry = tk.Entry(root)
-        self.precio_reposicion_entry.pack()
+        self.titulo_label = tk.Label(root, text="Título:", **label_style)
+        self.titulo_label.pack(pady=5)
+        self.titulo_entry = tk.Entry(root, **entry_style)
+        self.titulo_entry.pack(pady=5)
 
-        self.crear_libro_button = tk.Button(root, text="Registrar Libro", command=self.registrar_libro)
-        self.crear_libro_button.pack()
+        self.precio_reposicion_label = tk.Label(root, text="Precio de Reposición:", **label_style)
+        self.precio_reposicion_label.pack(pady=5)
+        self.precio_reposicion_entry = tk.Entry(root, **entry_style)
+        self.precio_reposicion_entry.pack(pady=5)
 
-        self.volver_button = tk.Button(root, text="Volver a Administración de Libros", command=self.volver_a_admin_socios)
-        self.volver_button.pack()
-        
-        self.exito_label = tk.Label(root, text="")
+        self.crear_libro_button = tk.Button(root, text="Registrar Libro", command=self.registrar_libro, **button_style)
+        self.crear_libro_button.pack(pady=10)
+
+        self.volver_button = tk.Button(root, text="Volver a Administración de Libros", command=self.volver_a_admin_socios, **button_style)
+        self.volver_button.pack(pady=10)
+
+        self.exito_label = tk.Label(root, text="", **label_style)
         self.exito_label.pack()
+
+        # Configurar tamaño de la ventana y centrar en la pantalla
+        self.root.geometry("400x300")  # Puedes ajustar este tamaño según tus preferencias
+        self.center_window()
+
+        # Manejar eventos de cambio de tamaño de la ventana
+        self.root.bind("<Configure>", self.on_resize)
+
+    def center_window(self):
+        # Centrar la ventana en la pantalla
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        window_width = self.root.winfo_reqwidth()
+        window_height = self.root.winfo_reqheight()
+        x = int((screen_width - window_width) / 2)
+        y = int((screen_height - window_height) / 2)
+        self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+    def on_resize(self, event):
+        # Manejar evento de cambio de tamaño de la ventana
+        self.center_window()
 
 
     def registrar_libro(self):
