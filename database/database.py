@@ -13,16 +13,14 @@ class BibliotecaDB:
                 codigo INTEGER PRIMARY KEY,
                 titulo TEXT NOT NULL,
                 precio_reposicion REAL,
-                estado TEXT,
-                eliminado INTEGER DEFAULT 0
+                estado TEXT
             )
         """)
         
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS socios (
                 id_socio INTEGER PRIMARY KEY,
-                nombre TEXT NOT NULL,
-                eliminado INTEGER DEFAULT 0
+                nombre TEXT NOT NULL                
             )
         """)
         
